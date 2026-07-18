@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Irish Usage Tester</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">Quick Prototype</p>
+        <h1>Irish vs English Conversation Tester</h1>
+        <p class="intro">
+          Record one conversation, run Abair and a local English recognizer separately, then estimate how much Irish versus English was used.
+        </p>
+        <p class="warning">
+          This is still a rough heuristic. Abair handles one transcript path, a browser-side Whisper English model handles the other, and the final merged transcript is a best guess rather than a verified bilingual transcript.
+        </p>
+      </section>
+
+      <section class="panel-grid">
+        <section class="card controls">
+          <div class="control-row">
+            <button id="recordButton" class="record-button" type="button">Start recording</button>
+            <button id="resetButton" class="ghost-button" type="button">Reset</button>
+          </div>
+          <div class="status-block">
+            <p class="status-label">Status</p>
+            <p id="statusText" class="status-text">Idle</p>
+            <p id="timerText" class="timer-text">00:00</p>
+            <p class="status-label secondary-label">English recognizer</p>
+            <p id="englishModelStatus" class="status-text subtle-status">Loading local model...</p>
+          </div>
+          <div class="meter-stack" aria-label="Estimated language usage">
+            <div class="meter-labels">
+              <span>Irish</span>
+              <span id="irishPercentLabel">0%</span>
+            </div>
+            <div class="meter-track">
+              <div id="irishMeter" class="meter-fill irish"></div>
+            </div>
+            <div class="meter-labels">
+              <span>English</span>
+              <span id="englishPercentLabel">0%</span>
+            </div>
+            <div class="meter-track">
+              <div id="englishMeter" class="meter-fill english"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card results">
+          <div class="result-grid">
+            <article>
+              <p class="result-label">Irish confidence</p>
+              <p id="irishConfidenceValue" class="result-value">0%</p>
+            </article>
+            <article>
+              <p class="result-label">Transcript coverage</p>
+              <p id="coverageValue" class="result-value">0%</p>
+            </article>
+            <article>
+              <p class="result-label">Detected tokens</p>
+              <p id="tokenCountValue" class="result-value">0</p>
+            </article>
+            <article>
+              <p class="result-label">Recording length</p>
+              <p id="durationValue" class="result-value">0.0s</p>
+            </article>
+          </div>
+          <div class="summary-block">
+            <p class="result-label">Conversation summary</p>
+            <p id="summaryText" class="summary-text">
+              Record audio to generate an estimate.
+            </p>
+          </div>
+          <div class="summary-block">
+            <p class="result-label">Transcriber comparison</p>
+            <p id="comparisonText" class="summary-text">
+              Waiting for a recording.
+            </p>
+          </div>
+          <div class="summary-block">
+            <p class="result-label">Most likely conversation</p>
+            <pre id="mergedTranscriptText" class="transcript-box">No merged transcript yet.</pre>
+          </div>
+          <div class="transcript-grid">
+            <section class="summary-block transcript-panel">
+              <p class="result-label">Abair transcript</p>
+              <pre id="abairTranscriptText" class="transcript-box transcript-box-small">No Abair transcript yet.</pre>
+            </section>
+            <section class="summary-block transcript-panel">
+              <p class="result-label">English transcript</p>
+              <pre id="englishTranscriptText" class="transcript-box transcript-box-small">No English transcript yet.</pre>
+            </section>
+          </div>
+          <div class="summary-block">
+            <p class="result-label">Word split by language</p>
+            <p class="word-split-note">
+              Each word is tagged heuristically after the two transcript paths are compared. The percentage beside the word is an estimated confidence for the assigned language, not a recognizer-supplied word confidence.
+            </p>
+            <div class="token-columns">
+              <section>
+                <p class="token-heading irish-heading">Irish words</p>
+                <div id="irishWordList" class="token-list empty-state">No Irish words detected yet.</div>
+              </section>
+              <section>
+                <p class="token-heading english-heading">English words</p>
+                <div id="englishWordList" class="token-list empty-state">No English words detected yet.</div>
+              </section>
+              <section>
+                <p class="token-heading uncertain-heading">Uncertain words</p>
+                <div id="uncertainWordList" class="token-list empty-state">No uncertain words yet.</div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
